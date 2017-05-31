@@ -54,4 +54,5 @@ public class FiguresAdapter extends ArrayAdapter<Figures>{
         public ImageView image;
     }
 
+
 }

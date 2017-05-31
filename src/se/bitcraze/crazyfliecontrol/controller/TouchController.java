@@ -33,6 +33,10 @@ import com.MobileAnarchy.Android.Widgets.Joystick.DualJoystickView;
 import com.MobileAnarchy.Android.Widgets.Joystick.JoystickMovedListener;
 import com.MobileAnarchy.Android.Widgets.Joystick.JoystickView;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.StrictMath.round;
+
 /**
  * The TouchController uses the on-screen joysticks to control the roll, pitch, yaw and thrust values.
  * The mapping of the axes can be changed with the "mode" setting in the preferences.
@@ -51,7 +55,7 @@ public class TouchController extends AbstractController {
         super(controls, activity);
         this.mDualJoystickView = dualJoystickview;
         this.mDualJoystickView.setMovementRange(mMovementRange, mMovementRange);
-        updateAutoReturnMode();
+        //updateAutoReturnMode();
     }
 
     private void updateAutoReturnMode() {
@@ -59,7 +63,7 @@ public class TouchController extends AbstractController {
                 isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER,
                 isRightAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER
         );
-        this.mDualJoystickView.autoReturn(true);
+        this.mDualJoystickView.autoReturn(false);
     }
 
     @Override
@@ -100,15 +104,30 @@ public class TouchController extends AbstractController {
         @Override
         public void OnReleased() {
             // Log.i("Joystick-Right", "Release");
-            mControls.setRightAnalogY(0);
-            mControls.setRightAnalogX(0);
-
+            float yStartF = mControls.getRightAnalog_Y();
+            float xStartF = mControls.getRightAnalog_X();
+            int yStart = round(yStartF);
+            int xStart = round(xStartF);
+            int maxXY = max(yStart, xStart);
+            for (int i = maxXY*100; i >= 0; i--) {
+                mControls.setRightAnalogY((i - (maxXY-yStart))/100);
+                mControls.setRightAnalogX((i - (maxXY-xStart))/100);
+                updateFlightData();
+            }
         }
 
         public void OnReturnedToCenter() {
             // Log.i("Joystick-Right", "Center");
-            mControls.setRightAnalogY(0);
-            mControls.setRightAnalogX(0);
+            float yStartF = mControls.getRightAnalog_Y();
+            float xStartF = mControls.getRightAnalog_X();
+            int yStart = round(yStartF);
+            int xStart = round(xStartF);
+            int maxXY = max(yStart, xStart);
+            for (int i = maxXY*10000; i >= 0; i--) {
+                mControls.setRightAnalogY((i - (maxXY-yStart))/100);
+                mControls.setRightAnalogX((i - (maxXY-xStart))/100);
+                updateFlightData();
+            }
         }
     };
 
@@ -128,13 +147,30 @@ public class TouchController extends AbstractController {
 
         @Override
         public void OnReleased() {
-            mControls.setLeftAnalogY(0);
-            mControls.setLeftAnalogX(0);
+            float yStartF = mControls.getLeftAnalog_Y();
+            float xStartF = mControls.getLeftAnalog_X();
+            int yStart = round(yStartF);
+            int xStart = round(xStartF);
+            int maxXY = max(yStart, xStart);
+            for (int i = maxXY * 100; i >= 0; i--) {
+                mControls.setLeftAnalogY((i - (maxXY - yStart)) / 100);
+                mControls.setLeftAnalogX((i - (maxXY - xStart)) / 100);
+                updateFlightData();
+            }
         }
 
+
         public void OnReturnedToCenter() {
-            mControls.setLeftAnalogY(0);
-            mControls.setLeftAnalogX(0);
+            float yStartF = mControls.getLeftAnalog_Y();
+            float xStartF = mControls.getLeftAnalog_X();
+            int yStart = round(yStartF);
+            int xStart = round(xStartF);
+            int maxXY = max(yStart, xStart);
+            for (int i = maxXY*100; i >= 0; i--) {
+                mControls.setLeftAnalogY((i - (maxXY - yStart)) / 100);
+                mControls.setLeftAnalogX((i - (maxXY - xStart)) / 100);
+                updateFlightData();
+            }
         }
     };
 

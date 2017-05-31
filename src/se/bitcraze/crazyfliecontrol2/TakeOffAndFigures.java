@@ -2,11 +2,11 @@ package se.bitcraze.crazyfliecontrol2;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -25,11 +25,21 @@ public class TakeOffAndFigures extends Activity {
         initializeMenuButtons();
 
         mListView = (ListView) findViewById(R.id.listView);
-
-
-        List<Figures> figures = genererFigures();
-        FiguresAdapter adapter = new FiguresAdapter(TakeOffAndFigures.this, figures);
+        List<Figures> figures = generateFigures();
+        final FiguresAdapter adapter = new FiguresAdapter(TakeOffAndFigures.this, figures);
         mListView.setAdapter(adapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Object item = adapter.getItem(position);
+
+                Intent intent = new Intent(TakeOffAndFigures.this, MainActivity.class);
+                //based on item add info to intent
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -49,24 +59,15 @@ public class TakeOffAndFigures extends Activity {
 
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(TakeOffAndFigures.this, TakeOffAndFigures.this);
-                //startActivity(intent);
+                Intent intent = new Intent(TakeOffAndFigures.this, TakeOff.class);
+                startActivity(intent);
             }
         });
     }
 
-    /**mListView.setOnItemClickListener(new OnItemClickListener(){
-        @Override
-        public void onItemClick(AdapterView<?>adapter,View v, int position){
-            ItemClicked item = adapter.getItemAtPosition(position);
 
-            Intent intent = new Intent(Activity.this,destinationActivity.class);
-            //based on item add info to intent
-            startActivity(intent);
-        }
-    });*/
-    
-    private List<Figures> genererFigures(){
+
+    private List<Figures> generateFigures(){
         Resources res = getResources();
         List<Figures> figures = new ArrayList<>();
         figures.add(new Figures("Looping", "Le looping est réalisé par le drone en avançant horizontalement et il effectue une boucle verticalenent vers le haut"));
